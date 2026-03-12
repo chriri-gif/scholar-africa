@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ScholarAfrica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink:     #ff3fa4;
+      --pink2:    #ff85c8;
+      --pink-bg:  #fff0f7;
+      --hot:      #ff0090;
+      --ink:      #1a0a12;
+      --ink2:     #7a3060;
+      --white:    #ffffff;
+      --border:   #ffc2e2;
+      --green:    #00c97a;
+      --yellow:   #ffe44d;
+      --blue:     #5bc8ff;
+    }
+
+    body {
+      background: #fff;
+      color: var(--ink);
+      font-family: 'Nunito', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: "";
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* ── TICKER ── */
+    .ticker {
+      background: var(--pink); color: #fff;
+      padding: 8px 0; overflow: hidden; white-space: nowrap;
+      border-bottom: 3px solid var(--hot);
+    }
+    .ticker-inner {
+      display: inline-flex; gap: 48px;
+      animation: tick 25s linear infinite;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px; letter-spacing: 1px;
+    }
+    @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--white);
+      border-bottom: 3px solid var(--border);
+      padding: 18px 20px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-inner {
+      max-width: 780px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .logo-badge {
+      background: var(--pink); color: #fff;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px; padding: 8px 10px;
+      border-radius: 10px;
+      border: 2px solid var(--hot);
+      box-shadow: 3px 3px 0 var(--hot);
+      white-space: nowrap;
+      line-height: 1.6;
+    }
+    .logo-sub {
+      font-size: 11px; color: var(--ink2); font-weight: 600;
+    }
+    .nav-btns { display: flex; gap: 8px; align-items: center; }
+    .btn-pill {
+      background: var(--pink-bg); color: var(--pink);
+      border: 2px solid var(--border); border-radius: 20px;
+      padding: 7px 16px; font-size: 12px; font-weight: 800;
+      cursor: pointer; font-family: 'Nunito', sans-serif;
+      transition: all .15s;
+    }
+    .btn-pill:hover, .btn-pill.active {
+      background: var(--pink); color: #fff; border-color: var(--hot);
+    }
+    .btn-refresh {
+      background: var(--pink); color: #fff;
+      border: 2px solid var(--hot);
+      border-radius: 10px; padding: 8px 16px;
+      font-size: 12px; font-weight: 800; cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      box-shadow: 3px 3px 0 var(--hot);
+      transition: all .15s;
+    }
+    .btn-refresh:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--hot); }
+    .btn-refresh:disabled { opacity: .5; cursor: default; transform: none; }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--pink);
+      background-image:
+        radial-gradient(circle at 80% 50%, #ff85c855 0%, transparent 60%),
+        radial-gradient(circle at 10% 80%, #ffffff22 0%, transparent 50%);
+      padding: 36px 20px 30px;
+      border-bottom: 4px solid var(--hot);
+      position: relative; overflow: hidden;
+    }
+    .hero::after {
+      content: "🌸";
+      position: absolute; right: -10px; top: -10px;
+      font-size: 120px; opacity: .15;
+      transform: rotate(15deg);
+    }
+    .hero-inner { max-width: 780px; margin: 0 auto; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+    .hero-left { flex: 1; min-width: 220px; }
+    .hero-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 18px; color: #fff; line-height: 1.7;
+      text-shadow: 3px 3px 0 var(--hot);
+      margin-bottom: 12px;
+    }
+    .hero-desc {
+      color: rgba(255,255,255,.85); font-size: 13px;
+      font-weight: 600; line-height: 1.6; margin-bottom: 18px;
+    }
+    .hero-stats {
+      display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .hero-stat {
+      background: rgba(255,255,255,.2);
+      border: 2px solid rgba(255,255,255,.4);
+      border-radius: 12px; padding: 10px 16px;
+      backdrop-filter: blur(8px);
+      text-align: center;
+    }
+    .hero-stat-num {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px; color: var(--yellow);
+      text-shadow: 2px 2px 0 #c47000;
+    }
+    .hero-stat-lbl { font-size: 10px; color: rgba(255,255,255,.8); margin-top: 4px; font-weight: 700; }
+
+    /* ── SECTION TITLE ── */
+    .section-head {
+      max-width: 780px; margin: 0 auto 18px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    }
+    .section-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 13px; color: var(--pink);
+      text-shadow: 2px 2px 0 var(--hot);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title::before {
+      content: ""; display: block;
+      width: 12px; height: 12px;
+      background: var(--pink); border-radius: 3px;
+      box-shadow: 2px 2px 0 var(--hot);
+    }
+
+    /* ── FILTERS ── */
+    .filters-wrap {
+      background: var(--pink-bg);
+      border-top: 3px solid var(--border);
+      border-bottom: 3px solid var(--border);
+      padding: 14px 20px;
+    }
+    .filters-inner {
+      max-width: 780px; margin: 0 auto;
+      display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+    }
+    .filter-lbl {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px; color: var(--ink2); margin-right: 4px;
+    }
+
+    /* ── MAIN ── */
+    main { max-width: 780px; margin: 0 auto; padding: 28px 16px 80px; }
+
+    /* ── LOADING ── */
+    .loading { text-align: center; padding: 70px 20px; }
+    .pixel-loader {
+      display: inline-grid; grid-template-columns: repeat(3,14px); gap: 5px;
+      margin-bottom: 20px;
+    }
+    .pixel-loader span {
+      width: 14px; height: 14px; background: var(--pink);
+      border-radius: 3px;
+      animation: blink 1.2s infinite;
+    }
+    .pixel-loader span:nth-child(2) { animation-delay: .2s; }
+    .pixel-loader span:nth-child(3) { animation-delay: .4s; }
+    .pixel-loader span:nth-child(4) { animation-delay: .6s; }
+    .pixel-loader span:nth-child(5) { animation-delay: .8s; }
+    .pixel-loader span:nth-child(6) { animation-delay: 1s; }
+    .pixel-loader span:nth-child(7) { animation-delay: .4s; }
+    .pixel-loader span:nth-child(8) { animation-delay: .6s; }
+    .pixel-loader span:nth-child(9) { animation-delay: .8s; }
+    @keyframes blink { 0%,100%{opacity:.2} 50%{opacity:1} }
+    .loading p { font-family: 'Press Start 2P', monospace; font-size: 10px; color: var(--pink2); line-height: 1.8; }
+
+    /* ── CARDS GRID ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 3px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform .18s, box-shadow .18s;
+      animation: popIn .4s ease both;
+      position: relative;
+    }
+    .card:hover {
+      transform: translate(-3px,-3px);
+      box-shadow: 6px 6px 0 var(--pink2);
+      border-color: var(--pink);
+    }
+    @keyframes popIn { from{opacity:0;transform:scale(.95) translateY(10px)} to{opacity:1;transform:scale(1) translateY(0)} }
+
+    .card-top {
+      background: var(--pink-bg);
+      border-bottom: 3px solid var(--border);
+      padding: 14px 16px 12px;
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+    }
+    .source-badge {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px; padding: 5px 9px;
+      border-radius: 6px; border: 2px solid;
+      white-space: nowrap;
+    }
+    .source-s4d   { background: #fff0f7; color: var(--pink); border-color: var(--pink2); }
+    .source-ofa   { background: #f0fff8; color: var(--green); border-color: #80e4b8; }
+    .source-asa   { background: #fffbf0; color: #e08000; border-color: #ffcc66; }
+    .source-sc    { background: #f0f8ff; color: #0077cc; border-color: #80c8ff; }
+    .source-ofy   { background: #f5f0ff; color: #7700cc; border-color: #cc99ff; }
+
+    .badges { display: flex; gap: 6px; flex-wrap: wrap; }
+    .badge {
+      font-size: 9px; font-weight: 800; padding: 3px 8px;
+      border-radius: 20px;
+    }
+    .badge-new    { background: var(--yellow); color: #7a5000; }
+    .badge-urgent { background: #ffe0f0; color: var(--hot); border: 1.5px solid var(--pink); }
+    .badge-open   { background: #d4f7e8; color: #006640; }
+
+    .card-body { padding: 14px 16px; }
+    .card-title {
+      font-size: 14px; font-weight: 900; line-height: 1.45;
+      color: var(--ink); margin-bottom: 12px;
+    }
+    .card-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+    .meta-chip {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 700; color: var(--ink2);
+      background: var(--pink-bg); border: 1.5px solid var(--border);
+      border-radius: 20px; padding: 3px 10px;
+    }
+
+    .card-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--pink); color: #fff;
+      text-decoration: none; padding: 9px 18px;
+      border-radius: 9px; font-size: 12px; font-weight: 800;
+      border: 2px solid var(--hot);
+      box-shadow: 3px 3px 0 var(--hot);
+      transition: all .15s;
+    }
+    .card-link:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--hot); }
+
+    /* ── EMPTY ── */
+    .empty {
+      grid-column: 1/-1; text-align: center; padding: 60px 20px;
+      border: 3px dashed var(--border); border-radius: 16px;
+    }
+    .empty .big { font-size: 48px; margin-bottom: 16px; }
+    .empty p { font-family: 'Press Start 2P', monospace; font-size: 10px; color: var(--pink2); line-height: 2; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink); color: rgba(255,255,255,.5);
+      text-align: center; padding: 24px;
+      font-family: 'Press Start 2P', monospace; font-size: 8px; line-height: 2.2;
+    }
+    footer span { color: var(--pink); }
+
+    @media (max-width: 500px) {
+      .hero-title { font-size: 13px; }
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner" id="ticker">
+    <span>🎓 SCHOLARAFRICA</span>
+    <span>★ BOURSES OUVERTES AUX AFRICAINS</span>
+    <span>🌸 NOUVELLES OPPORTUNITES CHAQUE JOUR</span>
+    <span>🎓 SCHOLARAFRICA</span>
+    <span>★ BOURSES OUVERTES AUX AFRICAINS</span>
+    <span>🌸 NOUVELLES OPPORTUNITES CHAQUE JOUR</span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-badge">SCHOLAR<br>AFRICA</div>
+      <div>
+        <div style="font-family:'Press Start 2P',monospace;font-size:9px;color:var(--pink);margin-bottom:4px;">🎓 Bourses du Jour</div>
+        <div class="logo-sub">Opportunités étrangères pour l'Afrique</div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn-refresh" id="refreshBtn" onclick="loadAll()">↻ Actualiser</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-title">FIND YOUR<br>SCHOLARSHIP<br>TODAY ✦</div>
+      <div class="hero-desc">Les meilleures bourses d'études étrangères, sélectionnées chaque jour pour les étudiants africains.</div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="statTotal">—</div>
+          <div class="hero-stat-lbl">BOURSES</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">5</div>
+          <div class="hero-stat-lbl">SOURCES</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="statTime">—</div>
+          <div class="hero-stat-lbl">MÀJ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters-wrap">
+  <div class="filters-inner">
+    <span class="filter-lbl">FILTER :</span>
+    <button class="btn-pill active" data-filter="all" onclick="applyFilter(this)">✦ Toutes</button>
+    <button class="btn-pill" data-filter="Scholars4Dev" onclick="applyFilter(this)">Scholars4Dev</button>
+    <button class="btn-pill" data-filter="Africans" onclick="applyFilter(this)">For Africans</button>
+    <button class="btn-pill" data-filter="AfterSchool" onclick="applyFilter(this)">After School</button>
+    <button class="btn-pill" data-filter="Youth" onclick="applyFilter(this)">For Youth</button>
+    <button class="btn-pill" data-filter="Corner" onclick="applyFilter(this)">Scholarships Corner</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+  <div class="section-head">
+    <div class="section-title">NOUVELLES BOURSES</div>
+    <div style="font-size:11px;color:var(--ink2);font-weight:700;" id="countLabel"></div>
+  </div>
+
+  <div class="cards-grid" id="cardsContainer">
+    <div style="grid-column:1/-1">
+      <div class="loading">
+        <div class="pixel-loader">
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+        </div>
+        <p>LOADING SCHOLARSHIPS...<br>PLEASE WAIT ♥</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div>SCHOLARAFRICA ✦ <span>100% GRATUIT</span> ✦ BOURSES POUR L'AFRIQUE</div>
+  <div>SOURCES : SCHOLARS4DEV · OPP. FOR AFRICANS · AFTER SCHOOL AFRICA · SCHOLARSHIPS CORNER · OPP. FOR YOUTH</div>
+</footer>
+
+<script>
+  const FEEDS = [
+    { url: "https://www.scholars4dev.com/feed/",           name: "Scholars4Dev",        cls: "source-s4d"  },
+    { url: "https://opportunitiesforafricans.com/feed/",   name: "Opp. for Africans",   cls: "source-ofa"  },
+    { url: "https://afterschoolafrica.com/feed/",          name: "After School Africa", cls: "source-asa"  },
+    { url: "https://scholarshipscorner.website/feed/",     name: "Scholarships Corner", cls: "source-sc"   },
+    { url: "https://www.opportunitiesforyouth.org/feed/",  name: "Opp. for Youth",      cls: "source-ofy"  },
+  ];
+
+  const KW = ["scholarship","bourse","fellowship","funded","africa","african","developing","international","masters","phd","bachelor","grant","study abroad"];
+
+  let allItems = [];
+  let activeFilter = "all";
+
+  function isRelevant(t, d) {
+    const s = (t + " " + d).toLowerCase();
+    return KW.some(k => s.includes(k));
+  }
+
+  function daysSince(ds) {
+    if (!ds) return 99;
+    return Math.floor((Date.now() - new Date(ds)) / 86400000);
+  }
+
+  function sourceClass(name) {
+    if (name.includes("Scholars4")) return "source-s4d";
+    if (name.includes("Africans"))  return "source-ofa";
+    if (name.includes("After"))     return "source-asa";
+    if (name.includes("Corner"))    return "source-sc";
+    return "source-ofy";
+  }
+
+  async function fetchFeed(feed) {
+    try {
+      const res  = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(feed.url)}`);
+      const data = await res.json();
+      const xml  = new DOMParser().parseFromString(data.contents, "text/xml");
+      return [...xml.querySelectorAll("item")].slice(0, 12).map(item => ({
+        title:   item.querySelector("title")?.textContent?.trim() || "",
+        link:    item.querySelector("link")?.textContent || "#",
+        desc:    item.querySelector("description")?.textContent || "",
+        pubDate: item.querySelector("pubDate")?.textContent || "",
+        source:  feed.name,
+        cls:     feed.cls,
+      })).filter(i => isRelevant(i.title, i.desc));
+    } catch { return []; }
+  }
+
+  function buildCard(item, i) {
+    const days    = daysSince(item.pubDate);
+    const isNew   = days <= 2;
+    const isOpen  = days <= 14;
+    const isUrg   = /deadline|closing|last day/i.test(item.title);
+    const dateStr = item.pubDate ? new Date(item.pubDate).toLocaleDateString("fr-FR", { day:"2-digit", month:"short" }) : "";
+    const cls     = sourceClass(item.source);
+
+    return `
+    <div class="card" style="animation-delay:${i*0.06}s" data-source="${item.source}">
+      <div class="card-top">
+        <span class="source-badge ${cls}">${item.source}</span>
+        <div class="badges">
+          ${isNew   ? '<span class="badge badge-new">🆕 NEW</span>' : ""}
+          ${isUrg   ? '<span class="badge badge-urgent">⚡ URGENT</span>' : ""}
+          ${isOpen  ? '<span class="badge badge-open">✓ OUVERT</span>' : ""}
+        </div>
+      </div>
+      <div class="card-body">
+        <h2 class="card-title">${item.title}</h2>
+        <div class="card-meta">
+          ${dateStr ? `<span class="meta-chip">📅 ${dateStr}</span>` : ""}
+          ${days < 99 ? `<span class="meta-chip">🕐 ${days}j</span>` : ""}
+        </div>
+        <a class="card-link" href="${item.link}" target="_blank" rel="noreferrer">
+          Voir la bourse ♥
+        </a>
+      </div>
+    </div>`;
+  }
+
+  function renderCards(items) {
+    const c = document.getElementById("cardsContainer");
+    document.getElementById("countLabel").textContent = `${items.length} bourse${items.length > 1 ? "s" : ""} trouvée${items.length > 1 ? "s" : ""}`;
+    if (!items.length) {
+      c.innerHTML = `<div class="empty"><div class="big">🌸</div><p>AUCUNE BOURSE<br>POUR CE FILTRE.<br>ESSAIE "TOUTES" !</p></div>`;
+      return;
+    }
+    c.innerHTML = items.map((it,i) => buildCard(it,i)).join("");
+  }
+
+  function applyFilter(btn) {
+    document.querySelectorAll(".btn-pill").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    activeFilter = btn.dataset.filter;
+    const filtered = activeFilter === "all" ? allItems : allItems.filter(i => i.source.includes(activeFilter));
+    renderCards(filtered);
+  }
+
+  function updateTicker(items) {
+    const t = items.slice(0,8).map(i => `🎓 ${i.title}`).join("   ★   ");
+    const full = t + "   ★   " + t;
+    document.getElementById("ticker").innerHTML = `<span>${full}</span>`;
+  }
+
+  async function loadAll() {
+    const btn = document.getElementById("refreshBtn");
+    btn.disabled = true; btn.textContent = "Loading…";
+    document.getElementById("cardsContainer").innerHTML = `<div style="grid-column:1/-1"><div class="loading"><div class="pixel-loader"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><p>SCANNING SCHOLARSHIPS...<br>PLEASE WAIT ♥</p></div></div>`;
+
+    const results = await Promise.all(FEEDS.map(fetchFeed));
+    allItems = results.flat();
+
+    // Dédoublonner
+    const seen = new Set();
+    allItems = allItems.filter(i => {
+      const k = i.title.toLowerCase().slice(0,40);
+      if (seen.has(k)) return false;
+      seen.add(k); return true;
+    });
+
+    allItems.sort((a,b) => new Date(b.pubDate) - new Date(a.pubDate));
+
+    document.getElementById("statTotal").textContent = allItems.length;
+    const now = new Date();
+    document.getElementById("statTime").textContent = now.toLocaleTimeString("fr-FR", { hour:"2-digit", minute:"2-digit" });
+
+    updateTicker(allItems);
+    const filtered = activeFilter === "all" ? allItems : allItems.filter(i => i.source.includes(activeFilter));
+    renderCards(filtered);
+
+    btn.disabled = false; btn.textContent = "↻ Actualiser";
+  }
+
+  loadAll();
+</script>
+</body>
+</html>
